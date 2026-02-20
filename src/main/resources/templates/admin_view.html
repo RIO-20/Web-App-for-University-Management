@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Data</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+   
+    <div class="main-content" style="margin-left: 0; width: 100%;">
+        
+       
+        <div class="top-bar">
+            <h2 class="page-title">View Database</h2>
+            <div style="display: flex; gap: 10px;">
+                <a href="/console" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6;">Back to Console</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+       
+        <div class="content-container">
+            <div class="welcome-card" style="background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);">
+                <h1>Database Inspector</h1>
+                <p>View contents of system tables.</p>
+            </div>
+
+            <div style="margin-bottom: 20px; text-align: center;">
+                <label style="font-size: 1.2em; margin-right: 10px;">Select Table to View:</label>
+                <select id="tableSelect" onchange="showTable()" style="padding: 10px; font-size: 1.1em; border-radius: 5px;">
+                    <option value="facultate">Facultate</option>
+                    <option value="admin">Administrator</option>
+                    <option value="sponsor">Sponsor</option>
+                    <option value="sala">Sala</option>
+                    <option value="dotare">Dotare</option>
+                    <option value="tranzactie">Tranzactie</option>
+                    <option value="sponsor_facultate">Sponsor_Facultate</option>
+                    <option value="dotare_tranzactie">Dotare_Tranzactie</option>
+                </select>
+            </div>
+
+            <div class="tables-container">
+                
+              
+                <div id="view-facultate" class="data-table-wrapper">
+                    <h3>Faculties</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Admin ID</th>
+                                <th>Budget</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fac : ${facultati}">
+                                <td th:text="${fac.id}"></td>
+                                <td th:text="${fac.nume}"></td>
+                                <td th:text="${fac.adminId}"></td>
+                                <td th:text="${fac.buget}"></td>
+                                <td th:text="${fac.descriere}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                
+                <div id="view-admin" class="data-table-wrapper" style="display:none;">
+                    <h3>Administrators</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Username</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="adm : ${admins}">
+                                <td th:text="${adm.id}"></td>
+                                <td th:text="${adm.nume} + ' ' + ${adm.prenume}"></td>
+                                <td th:text="${adm.email}"></td>
+                                <td th:text="${adm.username}"></td>
+                                <td th:text="${adm.telefon}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                
+                <div id="view-sponsor" class="data-table-wrapper" style="display:none;">
+                    <h3>Sponsors</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sp : ${sponsori}">
+                                <td th:text="${sp.nume}"></td>
+                                <td th:text="${sp.email}"></td>
+                                <td th:text="${sp.descriere}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                
+                <div id="view-sala" class="data-table-wrapper" style="display:none;">
+                    <h3>Rooms (Sali)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Capacity</th>
+                                <th>Faculty ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sala : ${sali}">
+                                <td th:text="${sala.id}"></td>
+                                <td th:text="${sala.nume}"></td>
+                                <td th:text="${sala.tip}"></td>
+                                <td th:text="${sala.capacitate}"></td>
+                                <td th:text="${sala.facultateId}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                
+                <div id="view-dotare" class="data-table-wrapper" style="display:none;">
+                    <h3>Equipment (Dotari)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Quantity</th>
+                                <th>State</th>
+                                <th>Room ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="dot : ${dotari}">
+                                <td th:text="${dot.id}"></td>
+                                <td th:text="${dot.nume}"></td>
+                                <td th:text="${dot.valoare}"></td>
+                                <td th:text="${dot.cantitate}"></td>
+                                <td th:text="${dot.stare}"></td>
+                                <td th:text="${dot.idSala}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                 
+                 <div id="view-tranzactie" class="data-table-wrapper" style="display:none;">
+                    <h3>Transactions</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Faculty ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="tr : ${tranzactii}">
+                                <td th:text="${tr.id}"></td>
+                                <td th:text="${tr.tip_tranzactie}"></td>
+                                <td th:text="${tr.descriere}"></td>
+                                <td th:text="${tr.facultateId}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+             
+                <div id="view-sponsor_facultate" class="data-table-wrapper" style="display:none;">
+                    <h3>Sponsor - Faculty Relations</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Faculty ID</th>
+                                <th>Sponsor ID</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sf : ${sponsor_facultate}">
+                                <td th:text="${sf.id}"></td>
+                                <td th:text="${sf.facultateId}"></td>
+                                <td th:text="${sf.sponsorId}"></td>
+                                <td th:text="${sf.tip}"></td>
+                                <td th:text="${sf.valoare}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+              
+                <div id="view-dotare_tranzactie" class="data-table-wrapper" style="display:none;">
+                    <h3>Equipment - Transaction Relations</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Transaction ID</th>
+                                <th>Equipment ID</th>
+                                <th>Quantity</th>
+                                <th>Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="dt : ${dotare_tranzactie}">
+                                <td th:text="${dt.id}"></td>
+                                <td th:text="${dt.tranzactieId}"></td>
+                                <td th:text="${dt.dotareId}"></td>
+                                <td th:text="${dt.cantitate}"></td>
+                                <td th:text="${dt.valoare}"></td>
+                                <td th:text="${dt.descriere}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <style>
+                .data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 15px;
+                    background: white;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                }
+                .data-table th, .data-table td {
+                    padding: 12px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }
+                .data-table th {
+                    background-color: #34495e;
+                    color: white;
+                }
+                .data-table tr:hover {
+                    background-color: #f1f1f1;
+                }
+            </style>
+
+            <script>
+                function showTable() {
+                    var selected = document.getElementById("tableSelect").value;
+                    var tables = document.getElementsByClassName("data-table-wrapper");
+                    for (var i = 0; i < tables.length; i++) {
+                        tables[i].style.display = "none";
+                    }
+                    document.getElementById("view-" + selected).style.display = "block";
+                }
+            </script>
+    </div>
+</body>
+</html>

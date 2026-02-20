@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Equipment Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .page-container {
+            padding: 20px;
+        }
+        .equipment-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+        }
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .history-table th, .history-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .history-table th {
+            background-color: #f8f9fa;
+        }
+        .badge-broken {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+        .badge-old {
+            background-color: #f39c12 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            UNIV MANAGEMENT
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/messages">Send An Email/Inbox</a></li>
+            <li><a href="/equipment" class="active">Equipment Management</a></li>
+            <li><a href="/analysis">Data Analysis</a></li>
+            <li><a href="#">Actions</a></li>
+            <li><a href="/sponsors">Sponsors & Donations</a></li>
+            
+            <li th:if="${admin.username == 'super'}">
+                <a href="/console" style="color: white;">Admin Console</a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <span class="user-name" th:text="${admin.nume} + ' ' + ${admin.prenume}">Admin Name</span>
+            <span class="user-role">Administrator</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2 class="page-title" th:text="'Room Details: ' + ${roomName}">Room Details</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="/equipment" style="color: #7f8c8d; text-decoration: none; font-weight: bold;">&larr; Back to Overview</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+        <div class="page-container">
+            
+          
+            <div class="equipment-card" th:if="${not #maps.isEmpty(equipmentCounts)}">
+                <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px;">Equipment Inventory</h3>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div th:each="entry : ${equipmentCounts}" style="background: #f8f9fa; padding: 10px 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+                        <span th:text="${entry.key}" style="font-weight: bold; color: #34495e;"></span>
+                        <span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.9em; margin-left: 8px;" th:text="${entry.value}"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:each="item : ${equipmentList}" class="equipment-card">
+                <div class="equipment-header">
+                    <h3 th:text="${item.name}" style="margin: 0; color: #2c3e50;"></h3>
+                    <div>
+                        <span th:text="${item.state}" 
+                              th:classappend="${#strings.toLowerCase(item.state) == 'stricat' or #strings.toLowerCase(item.state) == 'broken' ? 'badge-broken' : (#strings.toLowerCase(item.state) == 'vechi' or #strings.toLowerCase(item.state) == 'old' ? 'badge-old' : '')}"
+                              style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-weight: bold; color: #7f8c8d;"></span>
+                        <span th:text="${item.quantity} + ' pcs'" style="background: #3498db; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 10px;"></span>
+                        <span th:text="${item.value} + ' RON'" style="font-weight: bold; color: #27ae60; margin-left: 10px;"></span>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 0; color: #34495e;">Transaction History</h4>
+                
+                <table class="history-table" th:if="${not #lists.isEmpty(item.history)}">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="hItem : ${item.history}">
+                            <td th:text="${hItem.type}"></td>
+                            <td th:text="${hItem.description}"></td>
+                            <td th:text="${hItem.amount} + ' RON'" style="text-align: right; font-family: monospace; font-weight: bold; color: #2c3e50;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div th:if="${#lists.isEmpty(item.history)}" style="color: #bdc3c7; font-style: italic;">
+                    No transaction history found for this item.
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(equipmentList)}" style="text-align: center; color: #7f8c8d; margin-top: 50px;">
+                No equipment found in this room.
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

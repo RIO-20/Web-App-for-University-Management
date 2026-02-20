@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .page-container { padding: 20px; }
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; color: #2c3e50; }
+        .sponsor-list { list-style: none; padding: 0; }
+        .sponsor-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .sponsor-info { display: flex; flex-direction: column; }
+        .sponsor-name { font-weight: bold; color: #34495e; }
+        .sponsor-email { font-size: 0.8em; color: #7f8c8d; }
+        .donation-value { font-weight: bold; color: #27ae60; font-family: monospace; }
+        .donation-count { font-size: 0.8em; color: #95a5a6; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #34495e; font-weight: bold; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; box-sizing: border-box; }
+        .btn-primary { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.3s; }
+        .btn-primary:hover { background: #2980b9; }
+        .badge-rank { background: #f1c40f; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 5px; }
+        .alert { padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+        .alert-error { background: #fadbd8; color: #c0392b; border: 1px solid #e6b0aa; }
+    </style>
+</head>
+<body>
+
+    
+    <div class="sidebar">
+        <div class="sidebar-header">UNIV MANAGEMENT</div>
+        <ul class="nav-links">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/messages">Send An Email/Inbox</a></li>
+            <li><a href="/equipment">Equipment Management</a></li>
+            <li><a href="/analysis">Data Analysis</a></li>
+            <li><a href="/actions">Actions</a></li>
+            <li><a href="/sponsors" class="active">Sponsors & Donations</a></li> <!-- Active Link -->
+            <li th:if="${admin != null and admin.username == 'super'}">
+                <a href="/console" style="color: white;">Admin Console</a>
+            </li>
+        </ul>
+        <div class="user-profile" th:if="${admin != null}">
+            <span class="user-name" th:text="${admin.nume} + ' ' + ${admin.prenume}">User</span>
+            <span class="user-role">Administrator</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2 class="page-title">Sponsorships & Donations</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                 <a href="/dashboard" style="color: #7f8c8d; text-decoration: none; font-weight: bold;">&larr; Back to Dashboard</a>
+                 <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+        <div class="page-container">
+            
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div th:if="${param.error}" class="alert alert-error" th:text="${param.error}"></div>
+
+            <div class="grid-layout">
+               
+                <div>
+                   
+                    <div class="card">
+                        <h3>🏆 Top Donors</h3>
+                        <div th:if="${#lists.isEmpty(stats)}" style="color: #95a5a6; text-align: center;">
+                            No sponsorships found. Add a donation to get started!
+                        </div>
+                        <ul class="sponsor-list" th:unless="${#lists.isEmpty(stats)}">
+                            <li class="sponsor-item" th:each="stat, iterStat : ${stats}">
+                                <div class="sponsor-info">
+                                    <span class="sponsor-name">
+                                        <span class="badge-rank" th:text="'#' + ${iterStat.count}"></span>
+                                        <span th:text="${stat.name}"></span>
+                                    </span>
+                                    <span class="sponsor-email" th:text="${stat.email}"></span>
+                                    <span class="donation-count" th:text="${stat.donationCount} + ' donations recorded'"></span>
+                                </div>
+                                <div class="donation-value" th:text="${stat.totalDonated} + ' RON'"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+               
+                <div>
+                    
+                    <div class="card" style="border-left: 5px solid #27ae60;">
+                        <h3>💰 Register New Donation</h3>
+                        <form action="/sponsors/donate" method="post">
+                            
+                            <div class="form-group" th:if="${allFaculties != null}">
+                                <label>Select Faculty</label>
+                                <select name="facultyId" class="form-control" required>
+                                    <option value="" disabled selected>Choose a faculty...</option>
+                                    <option th:each="f : ${allFaculties}" th:value="${f.id()}" th:text="${f.nume()}"></option>
+                                </select>
+                            </div>
+                            
+                            <input type="hidden" name="facultyId" th:if="${allFaculties == null and faculty != null}" th:value="${faculty.id()}">
+                            
+                            <div class="form-group">
+                                <label>Select Sponsor</label>
+                                <select name="sponsorId" class="form-control" required>
+                                    <option value="" disabled selected>Choose a sponsor...</option>
+                                    <option th:each="s : ${allSponsors}" th:value="${s.id}" th:text="${s.nume}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Donation Type</label>
+                                <select name="type" id="donationType" class="form-control" required onchange="toggleRoomSelect()">
+                                    <option value="bani">Bani (Increases Budget)</option>
+                                    <option value="obiecte">Obiecte (Items)</option>
+                                </select>
+                            </div>
+
+                            
+                            <div id="roomGroup" class="form-group" style="display: none;">
+                                <label>Target Room (For Inventory)</label>
+                                <select name="roomId" class="form-control">
+                                    <option value="" disabled selected>Select a room...</option>
+                                    <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.nume}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description / Object Name</label>
+                                <input type="text" name="description" class="form-control" placeholder="e.g. 10x Laptops, Research Grant, etc.">
+                            </div>
+
+                            <div id="quantityGroup" class="form-group" style="display: none;">
+                                <label>Quantity</label>
+                                <input type="number" name="quantity" class="form-control" value="1" min="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Total Value (RON)</label>
+                                <input type="number" step="0.01" name="amount" min="0.0" class="form-control" required placeholder="0.00">
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="background: #27ae60;">Register Donation</button>
+                        </form>
+                    </div>
+
+                    
+                    <div class="card" style="border-left: 5px solid #3498db;">
+                        <h3>🤝 Register New Sponsor</h3>
+                        <form action="/sponsors/add" method="post">
+                            <div class="form-group">
+                                <label>Company / Person Name</label>
+                                <input type="text" name="name" class="form-control" required placeholder="e.g. TechCorp Inc.">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Contact</label>
+                                <input type="email" name="email" class="form-control" required placeholder="contact@sponsor.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="description" class="form-control" rows="2" placeholder="Industry, partnership details..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">Add Sponsor</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleRoomSelect() {
+            const type = document.getElementById('donationType').value;
+            const roomGroup = document.getElementById('roomGroup');
+            const quantityGroup = document.getElementById('quantityGroup');
+            
+            if (type === 'obiecte') {
+                roomGroup.style.display = 'block';
+                quantityGroup.style.display = 'block';
+            } else {
+                roomGroup.style.display = 'none';
+                quantityGroup.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

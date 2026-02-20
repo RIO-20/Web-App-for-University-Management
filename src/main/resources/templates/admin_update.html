@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Update Data</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+   
+    <div class="main-content" style="margin-left: 0; width: 100%;">
+        
+        
+        <div class="top-bar">
+            <h2 class="page-title">Update Data</h2>
+            <div style="display: flex; gap: 10px;">
+                <a href="/console" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6;">Back to Console</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+       
+        <div class="content-container">
+            <div class="welcome-card" style="background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);">
+                <h1>Update Records</h1>
+                <p>Select a table and a record to modify.</p>
+            </div>
+
+           
+            <div style="margin-bottom: 20px; text-align: center;">
+                <label style="font-size: 1.2em; margin-right: 10px;">Select Entity:</label>
+                <select id="entitySelect" onchange="showSelectors()" style="padding: 10px; font-size: 1.1em; border-radius: 5px;">
+                    <option value="">-- Select Type --</option>
+                    <option value="facultate">Faculty</option>
+                    <option value="admin">Administrator</option>
+                    <option value="sponsor">Sponsor</option>
+                    <option value="sala">Sala</option>
+                    <option value="dotare">Dotare</option>
+                    <option value="tranzactie">Tranzactie</option>
+                </select>
+            </div>
+
+          
+            <div id="recordSelectors" style="margin-bottom: 30px; text-align: center;">
+                
+                
+                <div id="selector-facultate" class="record-selector" style="display:none;">
+                    <label>Select Faculty to Update:</label>
+                    <select onchange="populateForm('facultate', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Faculty --</option>
+                        <option th:each="fac : ${facultati}" 
+                                th:value="${fac.id}" 
+                                th:data-admin-id="${fac.adminId}"
+                                th:data-nume="${fac.nume}"
+                                th:data-descriere="${fac.descriere}"
+                                th:data-buget="${fac.buget}"
+                                th:text="${fac.nume}"></option>
+                    </select>
+                </div>
+
+                
+                <div id="selector-admin" class="record-selector" style="display:none;">
+                    <label>Select Administrator to Update:</label>
+                    <select onchange="populateForm('admin', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Admin --</option>
+                        <option th:each="adm : ${admins}" 
+                                th:value="${adm.id}"
+                                th:data-nume="${adm.nume}"
+                                th:data-prenume="${adm.prenume}"
+                                th:data-email="${adm.email}"
+                                th:data-telefon="${adm.telefon}"
+                                th:data-username="${adm.username}"
+                                th:data-parola="${adm.parola}"
+                                th:text="${adm.nume} + ' ' + ${adm.prenume}"></option>
+                    </select>
+                </div>
+
+                
+                <div id="selector-sponsor" class="record-selector" style="display:none;">
+                    <label>Select Sponsor to Update:</label>
+                    <select onchange="populateForm('sponsor', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Sponsor --</option>
+                        <option th:each="sp : ${sponsori}" 
+                                th:value="${sp.id}"
+                                th:data-nume="${sp.nume}"
+                                th:data-descriere="${sp.descriere}"
+                                th:data-email="${sp.email}"
+                                th:text="${sp.nume}"></option>
+                    </select>
+                </div>
+
+               
+                <div id="selector-sala" class="record-selector" style="display:none;">
+                    <label>Select Sala to Update:</label>
+                    <select onchange="populateForm('sala', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Room --</option>
+                        <option th:each="s : ${sali}" 
+                                th:value="${s.id}"
+                                th:data-facultate-id="${s.facultateId}"
+                                th:data-nume="${s.nume}"
+                                th:data-tip="${s.tip}"
+                                th:data-capacitate="${s.capacitate}"
+                                th:text="${s.nume}"></option>
+                    </select>
+                </div>
+
+               
+                <div id="selector-dotare" class="record-selector" style="display:none;">
+                    <label>Select Dotare to Update:</label>
+                    <select onchange="populateForm('dotare', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Equipment --</option>
+                        <option th:each="d : ${dotari}" 
+                                th:value="${d.id}"
+                                th:data-sala-id="${d.idSala}"
+                                th:data-nume="${d.nume}"
+                                th:data-valoare="${d.valoare}"
+                                th:data-cantitate="${d.cantitate}"
+                                th:data-stare="${d.stare}"
+                                th:text="${d.nume}"></option>
+                    </select>
+                </div>
+
+              
+                <div id="selector-tranzactie" class="record-selector" style="display:none;">
+                    <label>Select Transaction to Update:</label>
+                    <select onchange="populateForm('tranzactie', this)" style="padding: 10px; width: 300px;">
+                        <option value="">-- Select Transaction --</option>
+                        <option th:each="t : ${tranzactii}" 
+                                th:value="${t.id}"
+                                th:data-facultate-id="${t.facultateId}"
+                                th:data-tip="${t.tip_tranzactie}"
+                                th:data-descriere="${t.descriere}"
+                                th:text="'ID: ' + ${t.id} + ' - ' + ${t.descriere}"></option>
+                    </select>
+                </div>
+            </div>
+
+          
+            <div class="forms-container" style="width: 100%; max-width: 600px; margin: auto;">
+                
+               
+                <div th:if="${success}" style="color: green; background: #dff0d8; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                    <span th:text="${success}"></span>
+                </div>
+                <div th:if="${error}" style="color: red; background: #f2dede; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                    <span th:text="${error}"></span>
+                </div>
+
+                
+                <div id="form-facultate" class="update-form" style="display:none;">
+                    <h3>Update Faculty</h3>
+                    <form action="/console/update/facultate" method="post">
+                        <input type="hidden" name="id" id="fac-id">
+                        <label>Assign Administrator :</label>
+                        <select name="adminId" id="fac-adminId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option value="">-- Select Admin --</option>
+                            <option th:each="adm : ${admins}" th:value="${adm.id}" th:text="${adm.nume} + ' ' + ${adm.prenume}"></option>
+                        </select>
+                        <label>Faculty Name:</label>
+                        <input type="text" name="nume" id="fac-nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Description:</label>
+                        <input type="text" name="descriere" id="fac-descriere" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Budget:</label>
+                        <input type="number" step="100.0" name="buget" id="fac-buget" min="0.0" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Faculty</button>
+                    </form>
+                </div>
+
+                
+                <div id="form-admin" class="update-form" style="display:none;">
+                    <h3>Update Administrator</h3>
+                    <form action="/console/update/admin" method="post">
+                        <input type="hidden" name="id" id="adm-id">
+                        <label>First Name:</label>
+                        <input type="text" name="prenume" id="adm-prenume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Last Name:</label>
+                        <input type="text" name="nume" id="adm-nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Email:</label>
+                        <input type="email" name="email" id="adm-email" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Phone:</label>
+                        <input type="text" name="telefon" id="adm-telefon" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Username:</label>
+                        <input type="text" name="username" id="adm-username" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Password:</label>
+                        <input type="text" name="parola" id="adm-parola" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Administrator</button>
+                    </form>
+                </div>
+
+                
+                <div id="form-sponsor" class="update-form" style="display:none;">
+                    <h3>Update Sponsor</h3>
+                    <form action="/console/update/sponsor" method="post">
+                        <input type="hidden" name="id" id="sp-id">
+                        <label>Name:</label>
+                        <input type="text" name="nume_sponsor" id="sp-nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Description:</label>
+                        <input type="text" name="descriere" id="sp-descriere" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Email:</label>
+                        <input type="email" name="email" id="sp-email" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Sponsor</button>
+                    </form>
+                </div>
+
+               
+                <div id="form-sala" class="update-form" style="display:none;">
+                    <h3>Update Sala</h3>
+                    <form action="/console/update/sala" method="post">
+                        <input type="hidden" name="id" id="sala-id">
+                        <label>Faculty:</label>
+                        <select name="facultateId" id="sala-facId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option th:each="fac : ${facultati}" th:value="${fac.id}" th:text="${fac.nume}"></option>
+                        </select>
+                        <label>Room Name:</label>
+                        <input type="text" name="nume" id="sala-nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Type:</label>
+                        <select name="tip" id="sala-tip" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option value="curs">Curs</option>
+                            <option value="laborator">Laborator</option>
+                            <option value="secretariat">Secretariat</option>
+                        </select>
+                        <label>Capacity:</label>
+                        <input type="number" name="capacitate" id="sala-capacitate" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Room</button>
+                    </form>
+                </div>
+
+                
+                <div id="form-dotare" class="update-form" style="display:none;">
+                    <h3>Update Dotare</h3>
+                    <form action="/console/update/dotare" method="post">
+                        <input type="hidden" name="id" id="dotare-id">
+                        <label>Room (Sala):</label>
+                        <select name="idSala" id="dotare-salaId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option th:each="sala : ${sali}" th:value="${sala.id}" th:text="${sala.nume}"></option>
+                        </select>
+                        <label>Name:</label>
+                        <input type="text" name="nume" id="dotare-nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Value:</label>
+                        <input type="number" step="0.01" name="valoare" id="dotare-valoare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>Quantity (Cantitate):</label>
+                        <input type="number" name="cantitate" id="dotare-cantitate" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <label>State:</label>
+                        <select name="stare" id="dotare-stare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option value="functional">Functional</option>
+                            <option value="vechi">Vechi</option>
+                            <option value="stricat">Stricat</option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Equipment</button>
+                    </form>
+                </div>
+
+               
+                <div id="form-tranzactie" class="update-form" style="display:none;">
+                    <h3>Update Transaction</h3>
+                    <form action="/console/update/tranzactie" method="post">
+                        <input type="hidden" name="id" id="tr-id">
+                        <label>Faculty:</label>
+                        <select name="facultateId" id="tr-facId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option th:each="fac : ${facultati}" th:value="${fac.id}" th:text="${fac.nume}"></option>
+                        </select>
+                        <label>Type:</label>
+                        <select name="tip_tranzactie" id="tr-tip" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <option value="achizitie">Achizitie</option>
+                            <option value="vanzare">Vanzare</option>
+                            <option value="reparatie">Reparatie</option>
+                        </select>
+                        <label>Description:</label>
+                        <input type="text" name="descriere" id="tr-descriere" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Update Transaction</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <script>
+                function showSelectors() {
+                    var selectedEntity = document.getElementById("entitySelect").value;
+                    
+                   
+                    var selectors = document.getElementsByClassName("record-selector");
+                    var forms = document.getElementsByClassName("update-form");
+                    
+                    for(var i=0; i<selectors.length; i++) selectors[i].style.display = "none";
+                    for(var i=0; i<forms.length; i++) forms[i].style.display = "none";
+                    
+                    if(selectedEntity) {
+                        document.getElementById("selector-" + selectedEntity).style.display = "block";
+                    }
+                }
+
+                function populateForm(type, selectElement) {
+                    var option = selectElement.options[selectElement.selectedIndex];
+                    if(!option.value) {
+                        document.getElementById("form-" + type).style.display = "none";
+                        return;
+                    }
+
+                    
+                    document.getElementById("form-" + type).style.display = "block";
+                    
+                  
+                    var idField = document.getElementById(type === 'facultate' ? 'fac-id' : 
+                                                        type === 'admin' ? 'adm-id' : 
+                                                        type === 'sponsor' ? 'sp-id' : 
+                                                        type === 'sala' ? 'sala-id' : 
+                                                        type === 'dotare' ? 'dotare-id' : 'tr-id');
+                    if(idField) idField.value = option.value;
+
+                    
+                    if (type === 'facultate') {
+                        document.getElementById('fac-adminId').value = option.getAttribute('data-admin-id');
+                        document.getElementById('fac-nume').value = option.getAttribute('data-nume');
+                        document.getElementById('fac-descriere').value = option.getAttribute('data-descriere');
+                        document.getElementById('fac-buget').value = option.getAttribute('data-buget');
+                    } else if (type === 'admin') {
+                        document.getElementById('adm-prenume').value = option.getAttribute('data-prenume');
+                        document.getElementById('adm-nume').value = option.getAttribute('data-nume');
+                        document.getElementById('adm-email').value = option.getAttribute('data-email');
+                        document.getElementById('adm-telefon').value = option.getAttribute('data-telefon');
+                        document.getElementById('adm-username').value = option.getAttribute('data-username');
+                        document.getElementById('adm-parola').value = option.getAttribute('data-parola');
+                    } else if (type === 'sponsor') {
+                        document.getElementById('sp-nume').value = option.getAttribute('data-nume');
+                        document.getElementById('sp-descriere').value = option.getAttribute('data-descriere');
+                        document.getElementById('sp-email').value = option.getAttribute('data-email');
+                    } else if (type === 'sala') {
+                        document.getElementById('sala-facId').value = option.getAttribute('data-facultate-id');
+                        document.getElementById('sala-nume').value = option.getAttribute('data-nume');
+                        document.getElementById('sala-tip').value = option.getAttribute('data-tip');
+                        document.getElementById('sala-capacitate').value = option.getAttribute('data-capacitate');
+                    } else if (type === 'dotare') {
+                        document.getElementById('dotare-salaId').value = option.getAttribute('data-sala-id');
+                        document.getElementById('dotare-nume').value = option.getAttribute('data-nume');
+                        document.getElementById('dotare-valoare').value = option.getAttribute('data-valoare');
+                        document.getElementById('dotare-cantitate').value = option.getAttribute('data-cantitate');
+                        document.getElementById('dotare-stare').value = option.getAttribute('data-stare');
+                    } else if (type === 'tranzactie') {
+                        document.getElementById('tr-facId').value = option.getAttribute('data-facultate-id');
+                        document.getElementById('tr-tip').value = option.getAttribute('data-tip');
+                        document.getElementById('tr-descriere').value = option.getAttribute('data-descriere');
+                    }
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>

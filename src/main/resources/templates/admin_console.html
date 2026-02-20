@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    
+    <div class="main-content" style="margin-left: 0; width: 100%;">
+        
+        
+        <div class="top-bar">
+            <h2 class="page-title">Admin Console</h2>
+            <div style="display: flex; gap: 10px;">
+                <a href="/dashboard" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6;">Back to Dashboard</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+      
+        <div class="content-container">
+            
+            <div class="welcome-card" style="background: linear-gradient(135deg, #2c3e50 0%, #434343 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <h1>Super Admin</h1>
+                <p>You can do anything you want here</p>
+            </div>
+
+            <div th:if="${success}" style="background-color: #dff0d8; color: #3c763d; padding: 15px; margin-bottom: 20px; border-radius: 4px; border: 1px solid #d6e9c6;">
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" style="background-color: #f2dede; color: #a94442; padding: 15px; margin-bottom: 20px; border-radius: 4px; border: 1px solid #ebccd1;">
+                <span th:text="${error}"></span>
+            </div>
+
+            
+            <div class="stats-grid">
+                
+              
+                <a href="/console/insert" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;">
+                        <span class="stat-number" style="font-size: 1.5rem;">Insert</span>
+                        <span class="stat-label">Insert into tables</span>
+                    </div>
+                </a>
+
+                
+                <a href="/console/update" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;">
+                        <span class="stat-number" style="font-size: 1.5rem;">Update</span>
+                        <span class="stat-label">Update tables</span>
+                    </div>
+                </a>
+
+               
+                <a href="/console/delete" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;">
+                        <span class="stat-number" style="font-size: 1.5rem;">Delete</span>
+                        <span class="stat-label">Delete data from the tables</span>
+                    </div>
+                </a>
+                
+                
+                <a href="/console/view" style="text-decoration: none; color: inherit;">
+                    <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;">
+                        <span class="stat-number" style="font-size: 1.5rem;">View</span>
+                        <span class="stat-label">View your database</span>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

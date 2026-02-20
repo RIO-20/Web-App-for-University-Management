@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Delete Data</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+ 
+    <div class="main-content" style="margin-left: 0; width: 100%;">
+        
+       
+        <div class="top-bar">
+            <h2 class="page-title">Delete Data</h2>
+            <div style="display: flex; gap: 10px;">
+                <a href="/console" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6;">Back to Console</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+       
+        <div class="content-container">
+            <div class="welcome-card" style="background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);">
+                <h1>Delete Records</h1>
+                <p>Select a table and a record to remove. Warning: This action cannot be undone.</p>
+            </div>
+
+        
+            <div style="margin-bottom: 20px; text-align: center;">
+                <label style="font-size: 1.2em; margin-right: 10px;">Select Entity:</label>
+                <select id="entitySelect" onchange="showSelectors()" style="padding: 10px; font-size: 1.1em; border-radius: 5px;">
+                    <option value="">-- Select Type --</option>
+                    <option value="facultate">Faculty</option>
+                    <option value="admin">Administrator</option>
+                    <option value="sponsor">Sponsor</option>
+                    <option value="sala">Sala</option>
+                    <option value="dotare">Dotare</option>
+                    <option value="tranzactie">Tranzactie</option>
+                </select>
+            </div>
+
+            
+            <div id="recordSelectors" style="margin-bottom: 30px; text-align: center;">
+                
+                <div th:if="${success}" style="color: green; background: #dff0d8; padding: 10px; border-radius: 4px; margin-bottom: 10px; text-align: center; max-width: 600px; margin: 10px auto;">
+                    <span th:text="${success}"></span>
+                </div>
+                <div th:if="${error}" style="color: red; background: #f2dede; padding: 10px; border-radius: 4px; margin-bottom: 10px; text-align: center; max-width: 600px; margin: 10px auto;">
+                    <span th:text="${error}"></span>
+                </div>
+
+                
+                <div id="selector-facultate" class="record-selector" style="display:none;">
+                    <form action="/console/delete/facultate" method="post" onsubmit="return confirm('Are you sure you want to delete this Faculty?');">
+                        <label>Select Faculty to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Faculty --</option>
+                            <option th:each="fac : ${facultati}" 
+                                    th:value="${fac.id}" 
+                                    th:text="${fac.nume}"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+
+                
+                <div id="selector-admin" class="record-selector" style="display:none;">
+                    <form action="/console/delete/admin" method="post" onsubmit="return confirm('Are you sure you want to delete this Administrator?');">
+                        <label>Select Administrator to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Admin --</option>
+                            <option th:each="adm : ${admins}" 
+                                    th:value="${adm.id}"
+                                    th:text="${adm.nume} + ' ' + ${adm.prenume}"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+
+               
+                <div id="selector-sponsor" class="record-selector" style="display:none;">
+                    <form action="/console/delete/sponsor" method="post" onsubmit="return confirm('Are you sure you want to delete this Sponsor?');">
+                        <label>Select Sponsor to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Sponsor --</option>
+                            <option th:each="sp : ${sponsori}" 
+                                    th:value="${sp.id}"
+                                    th:text="${sp.nume}"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+
+               
+                <div id="selector-sala" class="record-selector" style="display:none;">
+                    <form action="/console/delete/sala" method="post" onsubmit="return confirm('Are you sure you want to delete this Sala?');">
+                        <label>Select Sala to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Room --</option>
+                            <option th:each="s : ${sali}" 
+                                    th:value="${s.id}"
+                                    th:text="${s.nume} + ' (' + ${s.tip} + ')'"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+
+                
+                <div id="selector-dotare" class="record-selector" style="display:none;">
+                    <form action="/console/delete/dotare" method="post" onsubmit="return confirm('Are you sure you want to delete this Dotare?');">
+                        <label>Select Dotare to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Equipment --</option>
+                            <option th:each="d : ${dotari}" 
+                                    th:value="${d.id}"
+                                    th:text="${d.nume} + ' (' + ${d.stare} + ') - Qty: ' + ${d.cantitate}"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+
+                
+                <div id="selector-tranzactie" class="record-selector" style="display:none;">
+                    <form action="/console/delete/tranzactie" method="post" onsubmit="return confirm('Are you sure you want to delete this Transaction?');">
+                        <label>Select Transaction to Delete:</label>
+                        <select name="id" required style="padding: 10px; width: 300px;">
+                            <option value="">-- Select Transaction --</option>
+                            <option th:each="t : ${tranzactii}" 
+                                    th:value="${t.id}"
+                                    th:text="'ID: ' + ${t.id} + ' - ' + ${t.descriere}"></option>
+                        </select>
+                        <button type="submit" class="btn-primary" style="background-color: #c0392b; margin-left: 10px;">Delete</button>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function showSelectors() {
+                    var selectedEntity = document.getElementById("entitySelect").value;
+                    
+                    
+                    var selectors = document.getElementsByClassName("record-selector");
+                    
+                    for(var i=0; i<selectors.length; i++) selectors[i].style.display = "none";
+                    
+                    if(selectedEntity) {
+                        document.getElementById("selector-" + selectedEntity).style.display = "block";
+                    }
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>

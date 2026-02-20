@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Analysis</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            border-bottom: 2px solid #34495e;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .stat-box {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .room-stat {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+        }
+        .bar-functional { background: #2ecc71; }
+        .bar-broken { background: #e74c3c; }
+        .bar-old { background: #f39c12; }
+        
+   
+        body {
+            display: block !important;
+            overflow-y: auto !important;
+        }
+    </style>
+</head>
+<body>
+
+  
+    <div class="top-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #ecf0f1; border-bottom: 1px solid #bdc3c7;">
+        <h2 class="page-title" style="margin: 0; color: #2c3e50;" th:text="${faculty != null} ? 'Analysis: ' + ${faculty.nume} : 'Faculty Analysis'">Faculty Analysis</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="/dashboard" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6; text-decoration: none; color: white; border-radius: 4px;">Back to Dashboard</a>
+            <a href="/logout" class="logout-btn" style="padding: 8px 16px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 4px;">Logout</a>
+        </div>
+    </div>
+
+
+     <div class="content-container">
+        
+        <div th:if="${error}" style="text-align: center; color: red; padding: 20px;">
+            <h3 th:text="${error}"></h3>
+        </div>
+
+        <div th:if="${faculty}" class="analysis-container">
+            
+            
+            <div class="card">
+                <h2>Financial Overview</h2>
+                <div class="stat-box">
+                    <div>Current Budget</div>
+                    <div class="stat-value" th:text="${faculty.buget} + ' RON'"></div>
+                </div>
+
+                <h3>Recent Transactions</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #bdc3c7;">
+                            <th style="padding: 12px; text-align: center; width: 50px;">ID</th>
+                            <th style="padding: 12px; text-align: left;">Type</th>
+                            <th style="padding: 12px; text-align: left;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${transactions}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 12px; text-align: center;" th:text="${t.id}"></td>
+                            <td style="padding: 12px; text-align: left;" th:text="${t.tip_tranzactie}"></td>
+                            <td style="padding: 12px; text-align: left;" th:text="${t.descriere}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td colspan="3" style="text-align: center; padding: 20px; color: #7f8c8d;">No recent transactions found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+         
+            <div class="card">
+                <h2>Equipment Condition per Room</h2>
+                <div th:each="room : ${roomStats}" class="room-stat">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong th:text="${room.roomName}"></strong>
+                        <span th:text="'Total: ' + ${room.totalEquipment}"></span>
+                    </div>
+                    
+                    <div class="progress-bar" th:if="${room.totalEquipment > 0}">
+                        <div class="bar-functional" th:style="'width: ' + (${room.functionalCount} * 100.0 / ${room.totalEquipment}) + '%'" title="Functional"></div>
+                        <div class="bar-broken" th:style="'width: ' + (${room.brokenCount} * 100.0 / ${room.totalEquipment}) + '%'" title="Broken"></div>
+                        <div class="bar-old" th:style="'width: ' + (${room.oldCount} * 100.0 / ${room.totalEquipment}) + '%'" title="Old"></div>
+                    </div>
+                    <div th:if="${room.totalEquipment == 0}" style="color: #7f8c8d; font-size: 0.9em;">No equipment assigned.</div>
+                    
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-top: 2px;">
+                        <span style="color: #2ecc71;">● Functional: [[${room.functionalCount}]]</span> | 
+                        <span style="color: #e74c3c;">● Broken: [[${room.brokenCount}]]</span> | 
+                        <span style="color: #f39c12;">● Old: [[${room.oldCount}]]</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="card" style="grid-column: span 2;">
+                <h2>Financial Impact Analysis</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #bdc3c7;">
+                            <th style="padding: 12px; text-align: left;">Transaction Type</th>
+                            <th style="padding: 12px; text-align: right;">Total Value</th>
+                            <th style="padding: 12px; text-align: center;">Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="impact : ${financialImpact}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 12px; text-align: left;" th:text="${impact.transactionType}"></td>
+                            <td style="padding: 12px; text-align: right;" th:text="${impact.totalValue} + ' RON'"></td>
+                            <td style="padding: 12px; text-align: center;">
+                                <span th:if="${impact.financialImpact == 'Major'}" style="background-color: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">Major</span>
+                                <span th:if="${impact.financialImpact == 'Standard'}" style="background-color: #f39c12; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">Standard</span>
+                                <span th:if="${impact.financialImpact == 'Minor'}" style="background-color: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">Minor</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(financialImpact)}">
+                            <td colspan="3" style="text-align: center; padding: 20px; color: #7f8c8d;">No financial impact data available.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            
+            <div class="card" style="grid-column: span 2; margin-top: 20px;">
+                <h2>Room Efficiency & Equality Index (Complex Query #4)</h2>
+                <div style="background-color: #dff0d8; padding: 10px; border-radius: 4px; border: 1px solid #d6e9c6; margin-bottom: 10px; font-size: 0.9em; color: #3c763d;">
+                    <strong>Logic:</strong> Calculates "Value Per Seat" (Total Equipment Value / Capacity) and compares it to the Faculty Average. <br>
+                    • <strong>Elite</strong> (> 150% Avg): Room is over-funded. <br>
+                    • <strong>Standard</strong> (50% - 150% Avg): Room is properly funded. <br>
+                    • <strong>Needs Upgrade</strong> (< 50% Avg): Room is under-funded.
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #2c3e50; color: white;">
+                            <th style="padding: 12px; text-align: left;">Room Name</th>
+                            <th style="padding: 12px; text-align: center;">Capacity</th>
+                            <th style="padding: 12px; text-align: right;">Total Value</th>
+                            <th style="padding: 12px; text-align: right;">Value / Seat</th>
+                            <th style="padding: 12px; text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="room : ${roomEfficiency}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 12px; text-align: left; font-weight: bold;" th:text="${room.roomName}"></td>
+                            <td style="padding: 12px; text-align: center;" th:text="${room.capacity}"></td>
+                            <td style="padding: 12px; text-align: right;" th:text="${#numbers.formatDecimal(room.totalValue, 1, 2)} + ' RON'"></td>
+                            <td style="padding: 12px; text-align: right;" th:text="${#numbers.formatDecimal(room.valuePerSeat, 1, 2)} + ' RON/seat'"></td>
+                            <td style="padding: 12px; text-align: center;">
+                                <span th:if="${room.status == 'Elite'}" style="background-color: #f1c40f; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">Elite 🏆</span>
+                                <span th:if="${room.status == 'Standard'}" style="background-color: #2ecc71; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">Standard</span>
+                                <span th:if="${room.status == 'Needs Upgrade'}" style="background-color: #e74c3c; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">Needs Upgrade ⚠️</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(roomEfficiency)}">
+                            <td colspan="5" style="text-align: center; padding: 20px; color: #7f8c8d;">No room data available for analysis.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card" style="grid-column: span 2; margin-top: 20px;">
+                <h2>High Value Transactions</h2>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #8e44ad; color: white;">
+                            <th style="padding: 12px; text-align: center;">ID</th>
+                            <th style="padding: 12px; text-align: left;">Type</th>
+                            <th style="padding: 12px; text-align: left;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${highValueTransactions}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 12px; text-align: center;" th:text="${t.id}"></td>
+                            <td style="padding: 12px; text-align: left;" th:text="${t.tip_tranzactie != null ? t.tip_tranzactie : t.tip}"></td>
+                            <td style="padding: 12px; text-align: left;" th:text="${t.descriere}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(highValueTransactions)}">
+                            <td colspan="4" style="text-align: center; padding: 20px; color: #7f8c8d;">No high-value transactions found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card" style="grid-column: span 2; margin-top: 20px;">
+                <h2>Well Equipped Faculties</h2>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #16a085; color: white;">
+                             <th style="padding: 12px; text-align: center;">ID</th>
+                            <th style="padding: 12px; text-align: left;">Name</th>
+                            <th style="padding: 12px; text-align: left;">Description</th>
+                            <th style="padding: 12px; text-align: right;">Budget</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="f : ${wellEquippedFaculties}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 12px; text-align: center;" th:text="${f.id}"></td>
+                            <td style="padding: 12px; text-align: left; font-weight: bold;" th:text="${f.nume}"></td>
+                            <td style="padding: 12px; text-align: left;" th:text="${f.descriere}"></td>
+                            <td style="padding: 12px; text-align: right;" th:text="${f.buget} + ' RON'"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(wellEquippedFaculties)}">
+                            <td colspan="4" style="text-align: center; padding: 20px; color: #7f8c8d;">No well-equipped faculties found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

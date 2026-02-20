@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Insert Data</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+  
+    <div class="main-content" style="margin-left: 0; width: 100%;">
+        
+        
+        <div class="top-bar">
+            <h2 class="page-title">Insert Data</h2>
+            <div style="display: flex; gap: 10px;">
+                <a href="/console" class="btn-primary" style="padding: 8px 16px; margin: 0; background-color: #95a5a6;">Back to Console</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+
+        
+        <div class="content-container">
+            <div class="welcome-card" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);">
+                <h1>Insert New Records</h1>
+                <p>Select a table to add new data.</p>
+            </div>
+
+                
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <label style="font-size: 1.2em; margin-right: 10px;">Select Entity to Insert:</label>
+                    <select id="entitySelect" onchange="showForm()" style="padding: 10px; font-size: 1.1em; border-radius: 5px;">
+                        <option value="facultate">Faculty</option>
+                        <option value="admin">Administrator</option>
+                        <option value="sponsor">Sponsor</option>
+                        <option value="sala">Sala </option>
+                        <option value="dotare">Dotare </option>
+                        <option value="tranzactie">Tranzactie </option>
+                        <option value="dotare-tranzactie">Dotare Tranzactie </option>
+                        <option value="sponsor-facultate">Sponsor Facultate </option>
+                    </select>
+                </div>
+
+                
+                <div class="forms-container" style="width: 100%; max-width: 600px; margin: auto;">
+                    
+                  
+                    <div th:if="${success}" style="color: green; background: #dff0d8; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                        <span th:text="${success}"></span>
+                    </div>
+                    <div th:if="${error}" style="color: red; background: #f2dede; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                        <span th:text="${error}"></span>
+                    </div>
+
+                    
+                    <div id="form-facultate" class="insert-form">
+                        <h3>Insert Faculty</h3>
+                        <form action="/console/insert/facultate" method="post">
+                            <label>Assign Administrator :</label>
+                            <select name="adminId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Admin --</option>
+                                <option th:each="adm : ${admins}" 
+                                        th:value="${adm.id}" 
+                                        th:text="${adm.nume} + ' ' + ${adm.prenume} + ' (' + ${adm.username} + ')'">
+                                </option>
+                            </select>
+                            <label>Faculty Name:</label>
+                            <input type="text" name="nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Description:</label>
+                            <input type="text" name="descriere" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Budget:</label>
+                            <input type="number" step="100.0" name="buget" min = "0.0" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Faculty</button>
+                        </form>
+                    </div>
+
+                    
+                    <div id="form-admin" class="insert-form" style="display:none;">
+                        <h3>Insert Administrator</h3>
+                        <form action="/console/insert/admin" method="post">
+                            <label>First Name (Prenume):</label>
+                            <input type="text" name="prenume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Last Name (Nume):</label>
+                            <input type="text" name="nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Email:</label>
+                            <input type="email" name="email" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Phone:</label>
+                            <input type="text" name="telefon" style="width: 100%; padding: 8px; margin: 5px 0 15px;" 
+                                   pattern="07[0-9]{8}" 
+                                   maxlength="10"
+                                   minlength="10"
+                                   title="Phone number must start with 07 and contain exactly 10 digits"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   required>
+                            <label>Username:</label>
+                            <input type="text" name="username" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Password:</label>
+                            <input type="password" name="parola" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Administrator</button>
+                        </form>
+                    </div>
+
+                    
+                    <div id="form-sponsor" class="insert-form" style="display:none;">
+                        <h3>Insert Sponsor</h3>
+                        <form action="/console/insert/sponsor" method="post">
+                            <label>Name:</label>
+                            <input type="text" name="nume_sponsor" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Description:</label>
+                            <input type="text" name="descriere" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Email:</label>
+                            <input type="email" name="email" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Sponsor</button>
+                        </form>
+                    </div>
+
+              
+                    <div id="form-sala" class="insert-form" style="display:none;">
+                        <h3>Insert Sala (Room)</h3>
+                        <form action="/console/insert/sala" method="post">
+                            <label>Faculty:</label>
+                            <select name="facultateId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Facultate --</option>
+                                <option th:each="fac : ${facultati}" th:value="${fac.id}" th:text="${fac.nume}"></option>
+                            </select>
+                            <label>Room Name:</label>
+                            <input type="text" name="nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Type:</label>
+                            <select name="tip" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="curs">Curs</option>
+                                <option value="laborator">Laborator</option>
+                                <option value="secretariat">Secretariat</option>
+                            </select>
+                            <label>Capacity:</label>
+                            <input type="number" name="capacitate" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Room</button>
+                        </form>
+                    </div>
+
+                
+                    <div id="form-dotare" class="insert-form" style="display:none;">
+                        <h3>Insert Dotare (Equipment)</h3>
+                        <form action="/console/insert/dotare" method="post">
+                            <label>Room (Sala):</label>
+                            <select name="idSala" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Room --</option>
+                                <option th:each="sala : ${sali}" th:value="${sala.id}" th:text="${sala.nume} + ' (' + ${sala.tip} + ')'"></option>
+                            </select>
+                            <label>Name:</label>
+                            <input type="text" name="nume" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Value:</label>
+                            <input type="number" step="0.01" name="valoare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Quantity (Cantitate):</label>
+                            <input type="number" name="cantitate" required value="1" min="1" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>State (Stare):</label>
+                            <select name="stare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="functional">Functional</option>
+                                <option value="vechi">Vechi</option>
+                                <option value="stricat">Stricat</option>
+                            </select>
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Equipment</button>
+                        </form>
+                    </div>
+
+                   
+                    <div id="form-tranzactie" class="insert-form" style="display:none;">
+                        <h3>Insert Tranzactie (Transaction)</h3>
+                        <form action="/console/insert/tranzactie" method="post">
+                            <label>Faculty:</label>
+                            <select name="facultateId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Faculty --</option>
+                                <option th:each="fac : ${facultati}" th:value="${fac.id}" th:text="${fac.nume}"></option>
+                            </select>
+                            <label>Type:</label>
+                            <select name="tip_tranzactie" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="achizitie">Achizitie</option>
+                                <option value="vanzare">Vanzare</option>
+                                <option value="reparatie">Reparatie</option>
+                            </select>
+                            <label>Description:</label>
+                            <input type="text" name="descriere" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Transaction</button>
+                        </form>
+                    </div>
+                    <div id="form-dotare-tranzactie" class ="insert-form" style="display:none;">
+                        <h3>Insert Dotare Tranzactie (Equipment Transaction)</h3>
+                        <form action="/console/insert/dotare-tranzactie" method="post">
+                            <label>Transaction:</label>
+                            <select name="tranzactieId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Transaction --</option>
+                                <option th:each="tranzactie : ${tranzactii}" th:value="${tranzactie.id}" th:text="${tranzactie.id}"></option>
+                            </select>
+                            <label>Equipment:</label>
+                            <select name="dotareId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="">-- Select Equipment --</option>
+                                <option th:each="dotare : ${dotari}" th:value="${dotare.id}" th:text="${dotare.nume}"></option>
+                            </select>
+                            <label>Quantity:</label>
+                            <input type="number" name="cantitate" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Value:</label>
+                            <input type="number" step="0.01" name="valoare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <label>Description:</label>
+                            <input type="text" name="descriere" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Equipment Transaction</button>
+                        </form>
+                    </div>
+                    <div id="form-sponsor-facultate" class="insert-form" style="display:none;">
+                        <h3>Insert Sponsor Facultate (Sponsor Faculty)</h3>
+                        <form action="/console/insert/sponsor-facultate" method="post">
+                            <label>Sponsor:</label>
+                            <select name="sponsorId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option th:each="sponsor : ${sponsori}" th:value="${sponsor.id}" th:text="${sponsor.nume}"></option>
+                            </select>
+                            <label>Facultate:</label>
+                            <select name="facultateId" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option th:each="fac : ${facultati}" th:value="${fac.id}" th:text="${fac.nume}"></option>
+                            </select>
+                            <label>Type:</label>
+                            <select name="tip" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                                <option value="bani">Bani</option>
+                                <option value="obiecte">Obiecte</option>
+                            </select>
+                            <label>Value:</label>
+                            <input type="number" step="0.01" name="valoare" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+                            <button type="submit" class="btn-primary" style="width: 100%;">Create Sponsor Faculty</button>
+                        </form>
+                    </div>
+                </div>
+
+                <script>
+                    function showForm() {
+                        var selected = document.getElementById("entitySelect").value;
+                        var forms = document.getElementsByClassName("insert-form");
+                        for (var i = 0; i < forms.length; i++) {
+                            forms[i].style.display = "none";
+                        }
+                        document.getElementById("form-" + selected).style.display = "block";
+                    }
+                </script>
+        </div>
+    </div>
+</body>
+</html>
