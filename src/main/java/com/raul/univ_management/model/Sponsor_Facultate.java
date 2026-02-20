@@ -13,6 +13,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 
+/** Clasa model pentru entitatea Sponsor_Facultate
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Sponsor_Facultate {
     private long id;
     private long facultateId;

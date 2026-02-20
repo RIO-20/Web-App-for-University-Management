@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - University Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+
+    
+    <div class="sidebar">
+        <div class="sidebar-header">
+            UNIV MANAGEMENT
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="active">Dashboard</a></li>
+            <li><a href="/messages">Send An Email/Inbox</a></li>
+            <li><a href="/equipment">Equipment Management</a></li>
+            <li><a href="/analysis">Data Analysis</a></li>
+            <li><a href="/actions">Actions</a></li>
+            <li><a href="/sponsors">Sponsors & Donations</a></li>
+
+
+            
+            <li th:if="${admin.username == 'super'}">
+                <a href="/console" style="color: white;">Admin Console</a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <span class="user-name" th:text="${admin.nume} + ' ' + ${admin.prenume}">Admin Name</span>
+            <span class="user-role">Administrator</span>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        
+        
+        <div class="top-bar">
+            <h2 class="page-title">Dashboard</h2>
+            <a href="/login" class="logout-btn">Logout</a>
+        </div>
+
+       
+        <div class="content-container">
+            
+            
+            <div class="welcome-card">
+                <h1 th:text="'Hello, ' + ${admin.prenume} + '!'">Hello, User!</h1>
+                <p>Welcome back to the University Management System. Here is an overview of today's activities.</p>
+            </div>
+
+           
+            <div th:if="${budgetStats}" class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${budgetStats.initialBudget} + ' RON'" style="font-size: 1.5em; color: #3498db;"></span>
+                    <span class="stat-label">Initial Budget</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${budgetStats.totalSpent} + ' RON'" style="font-size: 1.5em; color: #e74c3c;"></span>
+                    <span class="stat-label">Total Spent</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${budgetStats.remainingBudget} + ' RON'" style="font-size: 1.5em; color: #2ecc71;"></span>
+                    <span class="stat-label">Remaining Budget</span>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 1.5em; font-weight: bold; color: #f39c12;" 
+                         th:text="${#numbers.formatDecimal((budgetStats.totalSpent * 100.0) / budgetStats.initialBudget, 1, 1)} + '%'">
+                    </div>
+                    <span class="stat-label">Budget Utilized</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 </body>
 </html>

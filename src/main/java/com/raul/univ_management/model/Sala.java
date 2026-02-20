@@ -12,6 +12,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 
+/** Clasa model pentru entitatea Sala
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Sala {
     private long id;
     private long facultateId;

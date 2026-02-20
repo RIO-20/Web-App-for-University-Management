@@ -12,6 +12,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+/** Clasa model pentru entitatea Administrator
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Administrator {
     private long id;
     private String nume;

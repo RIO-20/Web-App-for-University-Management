@@ -12,11 +12,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 
+/** Clasa model pentru entitatea Dotare_Tranzactie
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Dotare_Tranzactie {
     private long id;
     private long dotareId;
     private long tranzactieId;
-    private long cantitate;
+    private int cantitate;
     private BigDecimal valoare;
     private String descriere;
 

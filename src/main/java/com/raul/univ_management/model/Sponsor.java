@@ -10,6 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+/** Clasa model pentru entitatea Sponsor
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Sponsor {
     private long id;
     private String nume;

@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor //Creeaza un constructor default
 @AllArgsConstructor //Creeza un constructor care seteaza toti parametrii
 @Builder
+/** Clasa model pentru entitatea Facultate
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Facultate {
     private long id;
     private long adminId;

@@ -10,6 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+/** Clasa model pentru entitatea Tranzactie
+* @author Ionescu Raul-Andrei
+* @version 12 Ianuarie 2026
+*/
 public class Tranzactie {
     private long id;
     private long facultateId;
