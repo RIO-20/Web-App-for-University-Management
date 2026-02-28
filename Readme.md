@@ -52,10 +52,3 @@ The application adheres to a clean, standard **Layered Architecture**. The lack 
 3. Use the integrated Maven wrapper to run the application:
    ```bash
    ./mvnw spring-boot:run
-# University Management Web App (univ_management)
-
-## 📖 Overview
-The **University Management** project is a robust MVC web application designed to help universities manage operations efficiently. It tracks and administers key organizational aspects including faculties, rooms, equipment, sponsorships, and associated financial transactions. 
-
-It provides analysis capabilities such as tracking budget stats, calculating room maintenance costs, and assessing overall financial impact via a user-friendly frontend.
-
